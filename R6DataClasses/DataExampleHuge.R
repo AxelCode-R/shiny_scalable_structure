@@ -1,4 +1,4 @@
-Data_example_small <- R6::R6Class(
+DataExampleHuge <- R6::R6Class(
   public = list(
     initialize = function() {
     }

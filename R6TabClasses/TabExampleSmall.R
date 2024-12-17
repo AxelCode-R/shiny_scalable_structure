@@ -1,19 +1,9 @@
-tab_sidebar_config_example_small = function() {
-  list(
-    text = "example_small",
-    icon = shiny::icon("calendar"),
-    dynamic_badge_label = TRUE
-  )
-}
-
-
-Tab_example_small <- R6::R6Class(
-  inherit = Data_example_small,
+TabExampleSmall <- R6::R6Class(
+  inherit = DataExampleSmall,
 
   public = list(
-    initialize = function(tab, ns) {
+    initialize = function(ns) {
       super$initialize()
-      private$tab <- tab
       private$ns <- ns
     },
     ui = function() {
@@ -24,18 +14,12 @@ Tab_example_small <- R6::R6Class(
     },
 
     server = function(input, output, session) {
-      # shiny::moduleServer(
-      #   id = private$tab,
-      #   module = function(input, output, session) {
-          private$plot_server(input, output, session)
-          private$dynamic_sidebar_server(input, output, session)
-      #   }
-      # )
+      private$plot_server(input, output, session)
+      private$dynamic_sidebar_server(input, output, session)
     }
   ),
 
   private = list(
-    tab = NULL,
     ns = NULL,
     timer = NULL,
 

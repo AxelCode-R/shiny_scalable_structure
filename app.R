@@ -1,22 +1,29 @@
-R.utils::sourceDirectory(path = "R6_data_classes", modifiedOnly = FALSE)
-R.utils::sourceDirectory(path = "R6_tab_classes", modifiedOnly = FALSE)
+R.utils::sourceDirectory(path = "R6TabClasses", modifiedOnly = FALSE)
+R.utils::sourceDirectory(path = "R6DataClasses", modifiedOnly = FALSE)
 R.utils::sourceDirectory(path = "utils", modifiedOnly = FALSE)
 
 app <- AppFramework$new(
   tab_configs = list(
     example_small = list(
+      tab_class = TabExampleSmall,
       sidebar_config = list(
-        text = "example_small",
-        icon = shiny::icon("calendar"),
-        dynamic_badge_label = TRUE
+        dynamic_badge_label = TRUE,
+        text = "Example Small",
+        icon = shiny::icon("calendar")
       )
     ),
-    "example_with_subtabs"
+    example_with_subtabs = list(
+      tab_class = TabExampleHuge,
+      sidebar_config = list(
+        text = "Example Huge",
+        icon = shiny::icon("calendar")
+      )
+    )
   )
 )
 
 
-shiny::shinyApp(ui = app$main_ui, server = app$main_server)
+shiny::shinyApp(ui = app$ui, server = app$server)
 
 # ToDos:
 # home screen

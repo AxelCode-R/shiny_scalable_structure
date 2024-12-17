@@ -1,28 +1,32 @@
 AppFramework <- R6::R6Class(
   public = list(
-    initialize = function(tab_choices) {
-      private$tab_choices <- tab_choices
-      private$tab_ns <- lapply(tab_choices, shiny::NS)
-      names(private$tab_ns) <- tab_choices
+    initialize = function(tab_configs) {
+      private$tab_configs <- tab_configs
+      private$tab_choices <- names(tab_configs)
+      private$tab_ns <- setNames(
+        lapply(private$tab_choices, shiny::NS),
+        private$tab_choices
+      )
     },
-    main_ui = function() {
+    ui = function() {
       shinydashboard::dashboardPage(
         private$ui_header(),
         private$ui_sidebar(),
         private$ui_body()
       )
     },
-    main_server = function(input, output, session) {
+    server = function(input, output, session) {
       private$server_load_backends(input, output, session)
     }
   ),
   private = list(
+    tab_configs = NULL,
     tab_choices = NULL,
     tab_ns = NULL,
     tab_classes = list(),
     ############################################################################
     ui_header = function() {
-      shinydashboard::dashboardHeader(title = "Lazy Loading Tabs")
+      shinydashboard::dashboardHeader(title = "Example Title")
     },
     ui_sidebar = function() {
       shinydashboard::dashboardSidebar(
@@ -31,8 +35,11 @@ AppFramework <- R6::R6Class(
           lapply(
             X = private$tab_choices,
             FUN = function(tab) {
-              sidebar_config <- eval(parse(text = paste0("tab_sidebar_config_", tab, "()")))
-              sidebar_config$badgeLabel <- shiny::textOutput(private$tab_ns[[tab]]("sidebar_badgeLabel"), inline = TRUE)
+              sidebar_config <- private$tab_configs[[tab]]$sidebar_config
+              if (isTRUE(sidebar_config$dynamic_badge_label)) {
+                sidebar_config$badgeLabel <- shiny::textOutput(private$tab_ns[[tab]]("sidebar_badgeLabel"), inline = TRUE)
+              }
+              sidebar_config$dynamic_badge_label <- NULL
               sidebar_config$tabName <- tab
               do.call(what = shinydashboard::menuItem, args = sidebar_config)
             }
@@ -61,12 +68,10 @@ AppFramework <- R6::R6Class(
       shiny::observeEvent(
         eventExpr = input$sidebar_tabs,
         handlerExpr = {
-          selected_tab <- grep(gsub("tab_sidebar_", "", input$sidebar_tabs), private$tab_choices, value = TRUE)
+          selected_tab <- input$sidebar_tabs
           if (!selected_tab %in% names(private$tab_classes)) {
-
-            private$tab_classes[[selected_tab]] <- do.call(
-              what = eval(parse(text = paste0("Tab_", selected_tab, "$new"))),
-              args = list(tab = selected_tab, ns = private$tab_ns[[selected_tab]])
+            private$tab_classes[[selected_tab]] <- private$tab_configs[[selected_tab]]$tab_class$new(
+              ns = private$tab_ns[[selected_tab]]
             )
             output[[paste0("tab_ui_", selected_tab)]] <- shiny::renderUI(private$tab_classes[[selected_tab]]$ui())
             shiny::moduleServer(
