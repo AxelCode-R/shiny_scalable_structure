@@ -13,7 +13,6 @@ AppFramework <- R6::R6Class(
       )
     },
     main_server = function(input, output, session) {
-      #private$server_apply_static_tabs(input, output, session)
       private$server_load_backends(input, output, session)
     }
   ),
@@ -58,23 +57,6 @@ AppFramework <- R6::R6Class(
       )
     },
     ############################################################################
-    # server_apply_static_tabs = function(input, output, session) {
-    #   lapply(
-    #     X = private$tab_choices,
-    #     FUN = function(tab) {
-    #       output[[paste0("tab_sidebar_", tab)]] <- shinydashboard::renderMenu({
-    #         sidebar_args <- eval(parse(text = paste0("tab_sidebar_config_", tab, "()")))
-    #         sidebar_args$tabName <- paste0("tab_sidebar_", tab)
-    #         shinydashboard::sidebarMenu(
-    #           do.call(
-    #             what = shinydashboard::menuItem,
-    #             args = sidebar_args
-    #           )
-    #         )
-    #       })
-    #     }
-    #   )
-    # },
     server_load_backends = function(input, output, session) {
       shiny::observeEvent(
         eventExpr = input$sidebar_tabs,
@@ -91,7 +73,6 @@ AppFramework <- R6::R6Class(
               id = selected_tab,
               module = private$tab_classes[[selected_tab]]$server
             )
-            #private$tab_classes[[selected_tab]]$server(input, output, session)
           }
         }
       )
