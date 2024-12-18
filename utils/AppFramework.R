@@ -35,13 +35,16 @@ AppFramework <- R6::R6Class(
           lapply(
             X = private$tab_choices,
             FUN = function(tab) {
-              sidebar_config <- private$tab_configs[[tab]]$sidebar_config
-              if (isTRUE(sidebar_config$dynamic_badge_label)) {
-                sidebar_config$badgeLabel <- shiny::textOutput(private$tab_ns[[tab]]("sidebar_badgeLabel"), inline = TRUE)
+              tab_configs <- private$tab_configs[[tab]]
+              menuItem_args <- tab_configs$menuItem_args
+              if (isTRUE(tab_configs$menuItem_dynamic_badge_label)) {
+                menuItem_args$badgeLabel <- shiny::textOutput(
+                  outputId = private$tab_ns[[tab]]("sidebar_badgeLabel"),
+                  inline = TRUE
+                )
               }
-              sidebar_config$dynamic_badge_label <- NULL
-              sidebar_config$tabName <- tab
-              do.call(what = shinydashboard::menuItem, args = sidebar_config)
+              menuItem_args$tabName <- tab
+              do.call(what = shinydashboard::menuItem, args = menuItem_args)
             }
           )
         )
@@ -73,7 +76,9 @@ AppFramework <- R6::R6Class(
             private$tab_classes[[selected_tab]] <- private$tab_configs[[selected_tab]]$tab_class$new(
               ns = private$tab_ns[[selected_tab]]
             )
-            output[[paste0("tab_ui_", selected_tab)]] <- shiny::renderUI(private$tab_classes[[selected_tab]]$ui())
+            output[[paste0("tab_ui_", selected_tab)]] <- shiny::renderUI(
+              expr = private$tab_classes[[selected_tab]]$ui()
+            )
             shiny::moduleServer(
               id = selected_tab,
               module = private$tab_classes[[selected_tab]]$server

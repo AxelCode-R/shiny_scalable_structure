@@ -1,6 +1,5 @@
 TabExampleSmall <- R6::R6Class(
   inherit = DataExampleSmall,
-
   public = list(
     initialize = function(ns) {
       super$initialize()

@@ -4,17 +4,25 @@ R.utils::sourceDirectory(path = "utils", modifiedOnly = FALSE)
 
 app <- AppFramework$new(
   tab_configs = list(
+    example_start_tab = list(
+      tab_class = TabExampleStartTab,
+      menuItem_args = list(
+        selected = TRUE,
+        text = "Start Tab",
+        icon = shiny::icon("home")
+      )
+    ),
     example_small = list(
       tab_class = TabExampleSmall,
-      sidebar_config = list(
-        dynamic_badge_label = TRUE,
+      menuItem_dynamic_badge_label = TRUE,
+      menuItem_args = list(
         text = "Example Small",
         icon = shiny::icon("calendar")
       )
     ),
     example_with_subtabs = list(
       tab_class = TabExampleHuge,
-      sidebar_config = list(
+      menuItem_args = list(
         text = "Example Huge",
         icon = shiny::icon("calendar")
       )
