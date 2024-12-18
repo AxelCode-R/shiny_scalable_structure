@@ -68,22 +68,34 @@ AppFramework <- R6::R6Class(
       )
     },
     ############################################################################
+    load_backends_helper = function(tab, input, output, session) {
+      private$tab_classes[[tab]] <- private$tab_configs[[tab]]$tab_class$new(
+        ns = private$tab_ns[[tab]]
+      )
+      output[[paste0("tab_ui_", tab)]] <- shiny::renderUI(
+        expr = private$tab_classes[[tab]]$ui()
+      )
+      shiny::moduleServer(
+        id = tab,
+        module = private$tab_classes[[tab]]$server
+      )
+    },
     server_load_backends = function(input, output, session) {
+      lapply(
+        X = private$tab_choices,
+        FUN = function(tab) {
+          if (isFALSE(private$tab_configs[[tab]]$lazy_load)) {
+            private$load_backends_helper(tab = tab, input, output, session)
+          }
+        }
+      )
+
       shiny::observeEvent(
         eventExpr = input$sidebar_tabs,
         handlerExpr = {
           selected_tab <- input$sidebar_tabs
           if (!selected_tab %in% names(private$tab_classes)) {
-            private$tab_classes[[selected_tab]] <- private$tab_configs[[selected_tab]]$tab_class$new(
-              ns = private$tab_ns[[selected_tab]]
-            )
-            output[[paste0("tab_ui_", selected_tab)]] <- shiny::renderUI(
-              expr = private$tab_classes[[selected_tab]]$ui()
-            )
-            shiny::moduleServer(
-              id = selected_tab,
-              module = private$tab_classes[[selected_tab]]$server
-            )
+            private$load_backends_helper(tab = selected_tab, input, output, session)
           }
         }
       )

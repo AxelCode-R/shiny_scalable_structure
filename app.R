@@ -14,6 +14,7 @@ app <- AppFramework$new(
     ),
     example_small = list(
       tab_class = TabExampleSmall,
+      lazy_load = FALSE,
       menuItem_dynamic_badge_label = TRUE,
       menuItem_args = list(
         text = "Example Small",

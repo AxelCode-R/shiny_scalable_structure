@@ -15,6 +15,7 @@ TabExampleHuge <- R6::R6Class(
         ),
         subtab2 = list(
           subtab_class = SubTabExample2,
+          lazy_load = FALSE,
           tabPanel_args = list(
             title = "Secound Tab"
           )
@@ -52,24 +53,7 @@ TabExampleHuge <- R6::R6Class(
       )
     },
     server = function(input, output, session) {
-      shiny::observeEvent(
-        eventExpr = input$subtabs_selection,
-        handlerExpr = {
-          selected_subtab <- input$subtabs_selection
-          if (!selected_subtab %in% names(private$subtab_classes)) {
-            private$subtab_classes[[selected_subtab]] <- private$subtab_configs[[selected_subtab]]$subtab_class$new(
-              ns = private$subtab_ns[[selected_subtab]]
-            )
-            output[[paste0("subtab_ui_", selected_subtab)]] <- shiny::renderUI(
-              expr = private$subtab_classes[[selected_subtab]]$ui()
-            )
-            shiny::moduleServer(
-              id = selected_subtab,
-              module = private$subtab_classes[[selected_subtab]]$server
-            )
-          }
-        }
-      )
+      private$load_backends_server(input, output, session)
     }
   ),
 
@@ -78,6 +62,39 @@ TabExampleHuge <- R6::R6Class(
     subtab_configs = NULL,
     subtab_choices = NULL,
     subtab_ns = NULL,
-    subtab_classes = list()
+    subtab_classes = list(),
+
+    load_backends_helper = function(subtab, input, output, session) {
+      private$subtab_classes[[subtab]] <- private$subtab_configs[[subtab]]$subtab_class$new(
+        ns = private$subtab_ns[[subtab]]
+      )
+      output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
+        expr = private$subtab_classes[[subtab]]$ui()
+      )
+      shiny::moduleServer(
+        id = subtab,
+        module = private$subtab_classes[[subtab]]$server
+      )
+    },
+    load_backends_server = function(input, output, session) {
+      lapply(
+        X = private$subtab_choices,
+        FUN = function(subtab) {
+          if (isFALSE(private$subtab_configs[[subtab]]$lazy_load)) {
+            private$load_backends_helper(subtab = subtab, input, output, session)
+          }
+        }
+      )
+
+      shiny::observeEvent(
+        eventExpr = input$subtabs_selection,
+        handlerExpr = {
+          selected_subtab <- input$subtabs_selection
+          if (!selected_subtab %in% names(private$subtab_classes)) {
+            private$load_backends_helper(subtab = selected_subtab, input, output, session)
+          }
+        }
+      )
+    }
   )
 )
