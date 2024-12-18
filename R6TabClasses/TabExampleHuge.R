@@ -68,14 +68,16 @@ TabExampleHuge <- R6::R6Class(
       private$subtab_classes[[subtab]] <- private$subtab_configs[[subtab]]$subtab_class$new(
         ns = private$subtab_ns[[subtab]]
       )
+      ui <- private$subtab_classes[[subtab]]$ui()
       output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
-        expr = private$subtab_classes[[subtab]]$ui()
+        expr = ui
       )
       shiny::moduleServer(
         id = subtab,
         module = private$subtab_classes[[subtab]]$server
       )
     },
+
     load_backends_server = function(input, output, session) {
       lapply(
         X = private$subtab_choices,
