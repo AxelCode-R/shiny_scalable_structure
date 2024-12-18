@@ -30,6 +30,7 @@ AppFramework <- R6::R6Class(
     },
     ui_sidebar = function() {
       shinydashboard::dashboardSidebar(
+        collapsed = FALSE,
         shinydashboard::sidebarMenu(
           id = "sidebar_tabs",
           lapply(

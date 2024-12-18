@@ -20,7 +20,7 @@ app <- AppFramework$new(
         icon = shiny::icon("calendar")
       )
     ),
-    example_with_subtabs = list(
+    example_huge = list(
       tab_class = TabExampleHuge,
       menuItem_args = list(
         text = "Example Huge",

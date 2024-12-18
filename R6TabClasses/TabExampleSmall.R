@@ -7,7 +7,7 @@ TabExampleSmall <- R6::R6Class(
     },
     ui = function() {
       shiny::div(
-        paste0("hallo ex1   ", Sys.time()),
+        paste0("hello example small   ", Sys.time()),
         private$plot_ui()
       )
     },
