@@ -14,7 +14,7 @@ app <- AppFramework$new(
     ),
     example_small = list(
       tab_class = TabExampleSmall,
-      lazy_load = FALSE,
+      #lazy_load = FALSE,
       menuItem_dynamic_badge_label = TRUE,
       menuItem_args = list(
         text = "Example Small",
@@ -22,10 +22,27 @@ app <- AppFramework$new(
       )
     ),
     example_huge = list(
-      tab_class = TabExampleHuge,
+      #lazy_load = FALSE,
+      menuItem_dynamic_badge_label = TRUE,
       menuItem_args = list(
         text = "Example Huge",
         icon = shiny::icon("calendar")
+      ),
+      subtab_configs = list(
+        subtab1 = list(
+          subtab_class = SubTabExample1,
+          tabPanel_args = list(
+            title = "First Tab",
+            selected = TRUE
+          )
+        ),
+        subtab2 = list(
+          subtab_class = SubTabExample2,
+          lazy_load = FALSE,
+          tabPanel_args = list(
+            title = "Secound Tab"
+          )
+        )
       )
     )
   )
@@ -34,9 +51,3 @@ app <- AppFramework$new(
 
 shiny::shinyApp(ui = app$ui, server = app$server)
 
-# ToDos:
-# home screen
-# different sized tabs examples
-### small tab
-### huge tab with subtubs and own classes for each tab
-### examples sollen klar machen das namespace eigen ist (auch subtabs, vielleicht unterordner?)

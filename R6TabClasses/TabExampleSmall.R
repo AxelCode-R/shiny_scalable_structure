@@ -1,9 +1,10 @@
 TabExampleSmall <- R6::R6Class(
   inherit = DataExampleSmall,
   public = list(
-    initialize = function(ns) {
+    initialize = function(ns, app_rv) {
       super$initialize()
       private$ns <- ns
+      private$app_rv <- app_rv
     },
     ui = function() {
       shiny::div(
@@ -19,12 +20,15 @@ TabExampleSmall <- R6::R6Class(
   ),
 
   private = list(
+    app_rv = NULL,
     ns = NULL,
     timer = NULL,
 
     dynamic_sidebar_server = function(input, output, session) {
-      output$sidebar_badgeLabel <- shiny::renderText({
-        paste0("myBadge ", round(private$timer(), 3))
+      shiny::observe({
+        private$app_rv$menuItemBadgeLabel(
+          paste0("myBadge ", round(private$timer(), 3))
+        )
       })
     },
 

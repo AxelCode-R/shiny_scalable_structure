@@ -1,7 +1,8 @@
 SubTabExample2 <- R6::R6Class(
   public = list(
-    initialize = function(ns) {
+    initialize = function(ns, app_rv) {
       private$ns <- ns
+      private$app_rv <- app_rv
     },
     ui = function() {
       shiny::div(
@@ -9,10 +10,22 @@ SubTabExample2 <- R6::R6Class(
       )
     },
 
-    server = function(input, output, session) {}
+    server = function(input, output, session) {
+      shiny::observeEvent(
+        eventExpr = private$app_rv$TabsetPanelSelectedTrigger(),
+        handlerExpr = {
+          shiny::req(private$app_rv$TabsetPanelSelectedTrigger() != 0)
+          print("tab2 focus")
+          private$app_rv$menuItemBadgeLabel(
+            "tab2 focus"
+          )
+        }
+      )
+    }
   ),
 
   private = list(
-    ns = NULL
+    ns = NULL,
+    app_rv = NULL
   )
 )

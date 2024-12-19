@@ -1,26 +1,9 @@
-TabExampleHuge <- R6::R6Class(
-  inherit = DataExampleHuge,
-
+SubTabFramework <- R6::R6Class(
   public = list(
-    initialize = function(ns) {
-      super$initialize()
+    initialize = function(ns, app_rv, subtab_configs) {
+      private$app_rv <- app_rv
       private$ns <- ns
-      private$subtab_configs <- list(
-        subtab1 = list(
-          subtab_class = SubTabExample1,
-          tabPanel_args = list(
-            title = "First Tab",
-            selected = TRUE
-          )
-        ),
-        subtab2 = list(
-          subtab_class = SubTabExample2,
-          lazy_load = FALSE,
-          tabPanel_args = list(
-            title = "Secound Tab"
-          )
-        )
-      )
+      private$subtab_configs <- subtab_configs
       private$subtab_choices <- names(private$subtab_configs)
       private$subtab_ns <- setNames(
         lapply(
@@ -34,7 +17,6 @@ TabExampleHuge <- R6::R6Class(
     },
     ui = function() {
       shiny::div(
-        paste0("hello example huge   ", Sys.time()),
         shiny::tabsetPanel(
           id = private$ns("subtabs_selection"),
           !!!lapply(
@@ -58,6 +40,7 @@ TabExampleHuge <- R6::R6Class(
   ),
 
   private = list(
+    app_rv = NULL,
     ns = NULL,
     subtab_configs = NULL,
     subtab_choices = NULL,
@@ -65,8 +48,19 @@ TabExampleHuge <- R6::R6Class(
     subtab_classes = list(),
 
     load_backends_helper = function(subtab, input, output, session) {
+      app_rv <- list2env(as.list(private$app_rv))
+      app_rv$TabsetPanelSelectedTrigger <- shiny::reactiveVal(0)
+      shiny::observeEvent(
+        eventExpr = input$subtabs_selection,
+        handlerExpr = {
+          shiny::req(input$subtabs_selection == subtab)
+          app_rv$TabsetPanelSelectedTrigger(app_rv$TabsetPanelSelectedTrigger() + 1)
+        }
+      )
+
       private$subtab_classes[[subtab]] <- private$subtab_configs[[subtab]]$subtab_class$new(
-        ns = private$subtab_ns[[subtab]]
+        ns = private$subtab_ns[[subtab]],
+        app_rv = app_rv
       )
       ui <- private$subtab_classes[[subtab]]$ui()
       output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
