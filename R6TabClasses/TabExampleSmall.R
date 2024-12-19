@@ -1,10 +1,11 @@
 TabExampleSmall <- R6::R6Class(
   inherit = DataExampleSmall,
   public = list(
-    initialize = function(ns, app_rv) {
+    initialize = function(ns, app_rv, logger) {
       super$initialize()
       private$ns <- ns
       private$app_rv <- app_rv
+      private$logger <- logger
     },
     ui = function() {
       shiny::div(
@@ -21,6 +22,7 @@ TabExampleSmall <- R6::R6Class(
   ),
 
   private = list(
+    logger = NULL,
     app_rv = NULL,
     ns = NULL,
     timer = NULL,
@@ -28,7 +30,7 @@ TabExampleSmall <- R6::R6Class(
     dynamic_sidebar_server = function(input, output, session) {
       shiny::observe({
         private$app_rv$menuItemBadgeLabel(
-          paste0("myBadge ", round(private$timer(), 3))
+          paste0("time: ", private$timer())
         )
       })
     },
@@ -38,15 +40,23 @@ TabExampleSmall <- R6::R6Class(
     },
 
     plot_server = function(input, output, session) {
-      private$timer <- shiny::reactivePoll(
-        intervalMillis = 1*10^3,
+      private$timer <- reactivePoll_safely(
         session = session,
+        logger = private$logger,
+        intervalMillis = 2*10^3,
         checkFunc = function() {
+          if (runif(1)>0.9) {
+            stop(stringi::stri_rand_lipsum(n_paragraphs = 1))
+          }
           Sys.time()
         },
         valueFunc = function() {
-          runif(1)
-        }
+          if (runif(1)>0.9) {
+            stop(stringi::stri_rand_lipsum(n_paragraphs = 1))
+          }
+          format(Sys.time(), format = "%M:%S")
+        },
+        errorReturn = "ERROR"
       )
       output$plot <- shiny::renderPlot({
         trigger <- private$timer()

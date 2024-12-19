@@ -1,0 +1,29 @@
+.logger_tab {
+  border-left: 2px solid red;
+  border-top: 1px solid red;
+  padding: 3px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.logger_text_title {
+  with: 100%;
+  padding-bottom: 2px;
+}
+
+.logger_text {
+  max-height: 80px;
+  overflow: hidden;        /* Hide the text that overflows the container */
+  text-overflow: ellipsis; /* Adds ellipsis (...) when the text overflows */
+  border: 1px solid #ddd;  /* Optional border for visibility */
+  padding: 5px;            /* Optional padding */
+  font-family: Arial, sans-serif; /* Optional font */
+  cursor: pointer;        /* Change cursor to pointer on hover */
+}
+
+.logger_text_ellapsed {
+  max-height: unset;
+  white-space: normal;     /* Allow wrapping when expanded */
+  overflow: visible;       /* Show all content */
+  text-overflow: unset;    /* Remove ellipsis */
+}

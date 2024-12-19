@@ -1,6 +1,7 @@
 SubTabFramework <- R6::R6Class(
   public = list(
-    initialize = function(ns, app_rv, subtab_configs) {
+    initialize = function(ns, app_rv, subtab_configs, logger) {
+      private$logger <- logger
       private$app_rv <- app_rv
       private$ns <- ns
       private$subtab_configs <- subtab_configs
@@ -40,6 +41,7 @@ SubTabFramework <- R6::R6Class(
   ),
 
   private = list(
+    logger = NULL,
     app_rv = NULL,
     ns = NULL,
     subtab_configs = NULL,
@@ -61,7 +63,8 @@ SubTabFramework <- R6::R6Class(
       subtab_config <- private$subtab_configs[[subtab]]
       private$subtab_classes[[subtab]] <- subtab_config$subtab_class$new(
         ns = private$subtab_ns[[subtab]],
-        app_rv = app_rv
+        app_rv = app_rv,
+        logger = private$logger
       )
       output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
         expr = {

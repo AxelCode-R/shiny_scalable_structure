@@ -1,6 +1,6 @@
 SubTabExample2 <- R6::R6Class(
   public = list(
-    initialize = function(ns, app_rv) {
+    initialize = function(ns, app_rv, logger) {
       private$ns <- ns
       private$app_rv <- app_rv
     },

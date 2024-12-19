@@ -10,18 +10,21 @@ AppFramework <- R6::R6Class(
       )
     },
     ui = function() {
-      shinydashboard::dashboardPage(
-        private$ui_header(),
-        private$ui_sidebar(),
-        private$ui_body()
+      shinydashboardPlus::dashboardPage(
+        header = private$ui_header(),
+        sidebar = private$ui_sidebar(),
+        body = private$ui_body(),
+        controlbar = private$ui_controlbar()
       )
     },
     server = function(input, output, session) {
+      private$create_logger(input, output, session)
       private$create_app_rvs(input, output, session)
       private$server_load_backends(input, output, session)
     }
   ),
   private = list(
+    logger = NULL,
     global_css_files = NULL,
     tab_configs = NULL,
     tab_choices = NULL,
@@ -31,11 +34,11 @@ AppFramework <- R6::R6Class(
 
     ############################################################################
     ui_header = function() {
-      shinydashboard::dashboardHeader(title = "Example Title")
+      shinydashboardPlus::dashboardHeader(title = "Example Title")
     },
 
     ui_sidebar = function() {
-      shinydashboard::dashboardSidebar(
+      shinydashboardPlus::dashboardSidebar(
         collapsed = FALSE,
         shinydashboard::sidebarMenu(
           id = "sidebar_tabs",
@@ -80,7 +83,29 @@ AppFramework <- R6::R6Class(
       )
     },
 
+    ui_controlbar = function() {
+      shinydashboardPlus::dashboardControlbar(
+        id = "controlbar",
+        overlay = TRUE,
+        collapsed = FALSE,
+        shinydashboardPlus::controlbarMenu(
+          shinydashboardPlus::controlbarItem(
+            title = "Errors",
+            icon = icon("exclamation-triangle"),
+            shiny::uiOutput("controlbar_errors")
+          )
+        )
+      )
+    },
+
     ############################################################################
+    create_logger = function(input, output, session) {
+      private$logger <- AppReactiveLogger$new(
+        controlbarItem_OutputId = "controlbar_errors",
+        input, output, session
+      )
+    },
+
     create_app_rvs = function(input, output, session) {
       private$app_rvs <- setNames(lapply(
         X = private$tab_choices,
@@ -105,12 +130,14 @@ AppFramework <- R6::R6Class(
         private$tab_classes[[tab]] <- SubTabFramework$new(
           ns = private$tab_ns[[tab]],
           app_rv = private$app_rvs[[tab]],
-          subtab_configs = tab_config$subtab_configs
+          subtab_configs = tab_config$subtab_configs,
+          logger = private$logger
         )
       } else {
         private$tab_classes[[tab]] <- private$tab_configs[[tab]]$tab_class$new(
           ns = private$tab_ns[[tab]],
-          app_rv = private$app_rvs[[tab]]
+          app_rv = private$app_rvs[[tab]],
+          logger = private$logger
         )
       }
       output[[paste0("tab_ui_", tab)]] <- shiny::renderUI(

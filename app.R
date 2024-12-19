@@ -3,7 +3,7 @@ R.utils::sourceDirectory(path = "R6DataClasses", modifiedOnly = FALSE)
 R.utils::sourceDirectory(path = "framework", modifiedOnly = FALSE)
 
 app <- AppFramework$new(
-  global_css_files = "styles_global.css",
+  global_css_files = c("styles_global.css", "logger_style.css"),
   tab_configs = list(
     example_start_tab = list(
       tab_class = TabExampleStartTab,
@@ -54,3 +54,6 @@ app <- AppFramework$new(
 
 shiny::shinyApp(ui = app$ui, server = app$server)
 
+# todo
+# safely_reactivePoll
+# grid layout function
