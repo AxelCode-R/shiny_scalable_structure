@@ -4,7 +4,5 @@ p {
 }
 
 div {
-  border: 2px solid blue;
-  padding: 10px;
-  margin: 5px;
+  border: 1px solid blue;
 }

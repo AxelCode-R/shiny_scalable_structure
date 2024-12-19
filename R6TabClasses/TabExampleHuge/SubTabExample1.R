@@ -6,7 +6,8 @@ SubTabExample1 <- R6::R6Class(
     },
     ui = function() {
       shiny::div(
-        shiny::p(paste0("SubTabExample1 ", Sys.time()))
+        shiny::p(paste0("SubTabExample1 ", Sys.time())),
+        shiny::h1("h1")
       )
     },
 
