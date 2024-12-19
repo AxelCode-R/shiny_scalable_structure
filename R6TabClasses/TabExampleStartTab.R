@@ -2,6 +2,7 @@ TabExampleStartTab <- R6::R6Class(
   public = list(
     initialize = function(ns, app_rv) {
       private$ns <- ns
+      private$app_rv <- app_rv
     },
     ui = function() {
       shiny::div(
@@ -13,6 +14,7 @@ TabExampleStartTab <- R6::R6Class(
   ),
 
   private = list(
-    ns = NULL
+    ns = NULL,
+    app_rv = NULL
   )
 )

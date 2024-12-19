@@ -63,7 +63,6 @@ SubTabFramework <- R6::R6Class(
         ns = private$subtab_ns[[subtab]],
         app_rv = app_rv
       )
-      #ui <- private$subtab_classes[[subtab]]$ui()
       output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
         expr = {
           shiny::div(
