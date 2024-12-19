@@ -1,6 +1,7 @@
 AppFramework <- R6::R6Class(
   public = list(
-    initialize = function(tab_configs) {
+    initialize = function(tab_configs, global_css_files = NULL) {
+      private$global_css_files <- global_css_files
       private$tab_configs <- tab_configs
       private$tab_choices <- names(tab_configs)
       private$tab_ns <- setNames(
@@ -21,6 +22,7 @@ AppFramework <- R6::R6Class(
     }
   ),
   private = list(
+    global_css_files = NULL,
     tab_configs = NULL,
     tab_choices = NULL,
     tab_ns = NULL,
@@ -58,6 +60,11 @@ AppFramework <- R6::R6Class(
 
     ui_body = function() {
       shinydashboard::dashboardBody(
+        if (!is.null(private$global_css_files)) {
+          shiny::tags$style(shiny::HTML({
+            unlist(lapply(paste0("www/", private$global_css_files), readLines))
+          }))
+        },
         do.call(
           what = shinydashboard::tabItems,
           args = lapply(
@@ -107,7 +114,19 @@ AppFramework <- R6::R6Class(
         )
       }
       output[[paste0("tab_ui_", tab)]] <- shiny::renderUI(
-        expr = private$tab_classes[[tab]]$ui()
+        expr = {
+          shiny::div(
+            if (!is.null(tab_config$css_files)) {
+              shiny::tags$style(shiny::HTML({
+                css <- trimws(unlist(lapply(paste0("www/", tab_config$css_files), readLines)), which = "right")
+                add_ns <- grepl("\\{$", css)
+                css[add_ns] <- paste0("#tab_ui_", tab, " ", css[add_ns])
+                css
+              }))
+            },
+            private$tab_classes[[tab]]$ui()
+          )
+        }
       )
       shiny::moduleServer(
         id = tab,

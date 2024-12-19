@@ -3,6 +3,7 @@ R.utils::sourceDirectory(path = "R6DataClasses", modifiedOnly = FALSE)
 R.utils::sourceDirectory(path = "utils", modifiedOnly = FALSE)
 
 app <- AppFramework$new(
+  global_css_files = "styles_global.css",
   tab_configs = list(
     example_start_tab = list(
       tab_class = TabExampleStartTab,
@@ -19,7 +20,8 @@ app <- AppFramework$new(
       menuItem_args = list(
         text = "Example Small",
         icon = shiny::icon("calendar")
-      )
+      ),
+      css_files = c("styles.css", "styles2.css")
     ),
     example_huge = list(
       #lazy_load = FALSE,
@@ -34,7 +36,8 @@ app <- AppFramework$new(
           tabPanel_args = list(
             title = "First Tab",
             selected = TRUE
-          )
+          ),
+          css_files = "styles.css"
         ),
         subtab2 = list(
           subtab_class = SubTabExample2,

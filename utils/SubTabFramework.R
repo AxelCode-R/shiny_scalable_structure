@@ -58,13 +58,26 @@ SubTabFramework <- R6::R6Class(
         }
       )
 
-      private$subtab_classes[[subtab]] <- private$subtab_configs[[subtab]]$subtab_class$new(
+      subtab_config <- private$subtab_configs[[subtab]]
+      private$subtab_classes[[subtab]] <- subtab_config$subtab_class$new(
         ns = private$subtab_ns[[subtab]],
         app_rv = app_rv
       )
-      ui <- private$subtab_classes[[subtab]]$ui()
+      #ui <- private$subtab_classes[[subtab]]$ui()
       output[[paste0("subtab_ui_", subtab)]] <- shiny::renderUI(
-        expr = ui
+        expr = {
+          shiny::div(
+            if (!is.null(subtab_config$css_files)) {
+              shiny::tags$style(shiny::HTML({
+                css <- trimws(unlist(lapply(paste0("www/", subtab_config$css_files), readLines)), which = "right")
+                add_ns <- grepl("\\{$", css)
+                css[add_ns] <- paste0("#", private$ns(paste0("subtab_ui_", subtab)), " ", css[add_ns])
+                css
+              }))
+            },
+            private$subtab_classes[[subtab]]$ui()
+          )
+        }
       )
       shiny::moduleServer(
         id = subtab,
