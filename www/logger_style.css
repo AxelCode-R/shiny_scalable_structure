@@ -1,29 +1,38 @@
-.logger_tab {
-  border-left: 2px solid red;
-  border-top: 1px solid red;
-  padding: 3px;
-  margin-bottom: 6px;
+#logger_container {
   line-height: 1;
 }
 
-.logger_text_title {
+.logger_element {
+  border-left: 3px solid red;
+  border-top: 1px solid red;
+  padding: 3px;
+  margin-bottom: 10px;
+  box-shadow: 2px 3px 6px #888888;
+  border-radius: 6px;
+}
+
+.logger_element_text {
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logger_element_text_ellapsed {
+  -webkit-line-clamp: unset;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.logger_element_title {
   with: 100%;
   padding-bottom: 2px;
 }
 
-.logger_text {
-  max-height: 80px;
-  overflow: hidden;        /* Hide the text that overflows the container */
-  text-overflow: ellipsis; /* Adds ellipsis (...) when the text overflows */
-  border: 1px solid #ddd;  /* Optional border for visibility */
-  padding: 5px;            /* Optional padding */
-  font-family: Arial, sans-serif; /* Optional font */
-  cursor: pointer;        /* Change cursor to pointer on hover */
-}
-
-.logger_text_ellapsed {
-  max-height: unset;
-  white-space: normal;     /* Allow wrapping when expanded */
-  overflow: visible;       /* Show all content */
-  text-overflow: unset;    /* Remove ellipsis */
+#controlbar .tab-content {
+  padding: 5px 8px;
 }

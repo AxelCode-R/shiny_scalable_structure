@@ -13,7 +13,7 @@ reactivePoll_safely <- function(
       tryCatch({
         checkFunc()
       }, error = function(e) {
-        logger$log_error(paste0("Error in reactivePoll check: ", e$message))
+        logger$log(paste0("Error in reactivePoll check: ", e$message))
         return(NULL)
       })
     },
@@ -21,7 +21,7 @@ reactivePoll_safely <- function(
       tryCatch({
         valueFunc()
       }, error = function(e) {
-        logger$log_error(paste0("Error in reactivePoll value: ", e$message))
+        logger$log(paste0("Error in reactivePoll value: ", e$message))
         errorReturn
       })
     }

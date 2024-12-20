@@ -1,6 +1,7 @@
 AppFramework <- R6::R6Class(
   public = list(
     initialize = function(tab_configs, global_css_files = NULL) {
+      private$logger <- AppReactiveLogger$new()
       private$global_css_files <- global_css_files
       private$tab_configs <- tab_configs
       private$tab_choices <- names(tab_configs)
@@ -18,7 +19,7 @@ AppFramework <- R6::R6Class(
       )
     },
     server = function(input, output, session) {
-      private$create_logger(input, output, session)
+      private$logger$logger_server(input, output, session)
       private$create_app_rvs(input, output, session)
       private$server_load_backends(input, output, session)
     }
@@ -86,25 +87,19 @@ AppFramework <- R6::R6Class(
     ui_controlbar = function() {
       shinydashboardPlus::dashboardControlbar(
         id = "controlbar",
-        overlay = TRUE,
-        collapsed = FALSE,
+        overlay = FALSE,
+        collapsed = TRUE,
         shinydashboardPlus::controlbarMenu(
           shinydashboardPlus::controlbarItem(
-            title = "Errors",
-            icon = icon("exclamation-triangle"),
-            shiny::uiOutput("controlbar_errors")
+            title = "Messages",
+            icon = shiny::icon("envelope"),
+            private$logger$logger_ui()
           )
         )
       )
     },
 
     ############################################################################
-    create_logger = function(input, output, session) {
-      private$logger <- AppReactiveLogger$new(
-        controlbarItem_OutputId = "controlbar_errors",
-        input, output, session
-      )
-    },
 
     create_app_rvs = function(input, output, session) {
       private$app_rvs <- setNames(lapply(
