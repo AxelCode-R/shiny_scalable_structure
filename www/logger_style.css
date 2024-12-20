@@ -1,5 +1,8 @@
 #logger_container {
   line-height: 1;
+  max-height: 91vh;
+  overflow-y: clip;
+  padding-bottom: 10px;
 }
 
 .logger_element {
