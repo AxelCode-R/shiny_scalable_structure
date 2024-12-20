@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const observer = new MutationObserver(function(mutationsList, observer) {
     mutationsList.forEach(mutation => {
       if (mutation.type === 'childList') {
+        var controlbar_icon = document.getElementById('controlbar_icon');
+        controlbar_icon.classList.remove('icon-animation');
+        void controlbar_icon.offsetWidth;
+        controlbar_icon.classList.add('icon-animation');
+
         const elements = document.querySelectorAll('#logger_container .logger_element');
         if (elements.length > 10) {
           for (var i = 0; i < elements.length - 10; i++) {

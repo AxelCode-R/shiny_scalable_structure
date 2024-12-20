@@ -36,3 +36,45 @@
 #controlbar .tab-content {
   padding: 5px 8px;
 }
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+}
+
+/* Class for triggering the bounce animation */
+.bounce-animation {
+  animation: bounce 1s ease-in-out;
+}
+
+@keyframes animate_icon {
+  0% {
+    transform: rotate(0deg);
+    border-width: 1px;
+    border-color: transparent;
+  }
+  50% {
+    transform: rotate(180deg);
+    border-width: 1px;
+    border-color: yellow;
+  }
+  100% {
+    transform: rotate(360deg);
+    border-width: 1px;
+    border-color: transparent;
+  }
+}
+.icon-unanimated {
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: transparent;
+  border-style: solid;
+}
+.icon-animation {
+  animation: animate_icon 1s ease-in-out;
+}

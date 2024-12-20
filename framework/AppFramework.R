@@ -35,7 +35,14 @@ AppFramework <- R6::R6Class(
 
     ############################################################################
     ui_header = function() {
-      shinydashboardPlus::dashboardHeader(title = "Example Title")
+      shinydashboardPlus::dashboardHeader(
+        title = "Example Title",
+        controlbarIcon = shiny::div(
+          id = "controlbar_icon",
+          class = "icon-unanimated",
+          shiny::icon("gears")
+        )
+      )
     },
 
     ui_sidebar = function() {

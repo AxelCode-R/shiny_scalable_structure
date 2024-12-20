@@ -45,13 +45,13 @@ TabExampleSmall <- R6::R6Class(
         logger = private$logger,
         intervalMillis = 2*10^3,
         checkFunc = function() {
-          if (runif(1)>0.9) {
+          if (runif(1)>0.8) {
             stop(stringi::stri_rand_lipsum(n_paragraphs = 1))
           }
           Sys.time()
         },
         valueFunc = function() {
-          if (runif(1)>0.9) {
+          if (runif(1)>0.8) {
             stop(stringi::stri_rand_lipsum(n_paragraphs = 1))
           }
           format(Sys.time(), format = "%M:%S")
