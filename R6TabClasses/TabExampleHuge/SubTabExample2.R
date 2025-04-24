@@ -12,13 +12,11 @@ SubTabExample2 <- R6::R6Class(
 
     server = function(input, output, session) {
       shiny::observeEvent(
-        eventExpr = private$app_rv$TabsetPanelSelectedTrigger(),
+        ignoreNULL = TRUE,
+        eventExpr = private$app_rv$tab_selected_counter(),
         handlerExpr = {
-          shiny::req(private$app_rv$TabsetPanelSelectedTrigger() != 0)
           print("tab2 focus")
-          private$app_rv$menuItemBadgeLabel(
-            "tab2 focus"
-          )
+          private$app_rv$menuItemBadgeLabel("tab2 focus")
         }
       )
     }

@@ -41,7 +41,6 @@ TabExampleSmall <- R6::R6Class(
 
     plot_server = function(input, output, session) {
       private$timer <- reactivePoll_safely(
-        session = session,
         logger = private$logger,
         intervalMillis = 2*10^3,
         checkFunc = function() {

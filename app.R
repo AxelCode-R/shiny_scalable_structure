@@ -1,5 +1,6 @@
-R.utils::sourceDirectory(path = "R6TabClasses", modifiedOnly = FALSE)
+
 R.utils::sourceDirectory(path = "R6DataClasses", modifiedOnly = FALSE)
+R.utils::sourceDirectory(path = "R6TabClasses", modifiedOnly = FALSE)
 R.utils::sourceDirectory(path = "framework", modifiedOnly = FALSE)
 
 app <- AppFramework$new(

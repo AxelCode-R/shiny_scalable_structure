@@ -51,12 +51,16 @@ SubTabFramework <- R6::R6Class(
 
     load_backends_helper = function(subtab, input, output, session) {
       app_rv <- list2env(as.list(private$app_rv))
-      app_rv$TabsetPanelSelectedTrigger <- shiny::reactiveVal(0)
+      app_rv$tab_selected_counter <- shiny::reactiveVal(NULL)
       shiny::observeEvent(
         eventExpr = input$subtabs_selection,
         handlerExpr = {
           shiny::req(input$subtabs_selection == subtab)
-          app_rv$TabsetPanelSelectedTrigger(app_rv$TabsetPanelSelectedTrigger() + 1)
+          prev_val <- app_rv$tab_selected_counter()
+          if (is.null(prev_val)) {
+            prev_val <- 0
+          }
+          app_rv$tab_selected_counter(prev_val + 1)
         }
       )
 

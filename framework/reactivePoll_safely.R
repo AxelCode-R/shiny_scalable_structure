@@ -1,7 +1,7 @@
 reactivePoll_safely <- function(
-    session,
+    session = shiny::getDefaultReactiveDomain(),
     logger = NULL,
-    intervalMillis = 10000,
+    intervalMillis = Inf,
     checkFunc = function() {runif(1)},
     valueFunc = function() {runif(1)},
     errorReturn = NULL
@@ -13,7 +13,9 @@ reactivePoll_safely <- function(
       tryCatch({
         checkFunc()
       }, error = function(e) {
-        logger$log(paste0("Error in reactivePoll check: ", e$message))
+        if (!is.null(logger)) {
+          logger$log(paste0("Error in reactivePoll check: ", e$message))
+        }
         return(NULL)
       })
     },
@@ -21,9 +23,22 @@ reactivePoll_safely <- function(
       tryCatch({
         valueFunc()
       }, error = function(e) {
-        logger$log(paste0("Error in reactivePoll value: ", e$message))
-        errorReturn
+        if (!is.null(logger)) {
+          logger$log(paste0("Error in reactivePoll value: ", e$message))
+        }
+        return(errorReturn)
       })
     }
   )
+}
+
+do_safely <- function(expr, logger = NULL, errorReturn = NULL) {
+  tryCatch(
+    expr = expr,
+    error = function(e) {
+    if (!is.null(logger)) {
+      logger$log(paste0("Error in do_safely: ", e$message))
+    }
+    return(errorReturn)
+  })
 }
